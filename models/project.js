@@ -1,17 +1,10 @@
-module.exports = (mongoose) => {
-    const Project = mongoose.model(
-      'projects',
-      mongoose.Schema(
-        {
-          temple_id: Number,
-          name: String,
-          location: String,
-          dedicated: String,
-          additionalInfo: Boolean,
-        },
-        { timestamps: true }
-      )
-    );
-  
-    return Project;
-  };
+const mongoose = require('mongoose');
+
+const recipeSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  }
+});
+
+module.exports = mongoose.model('Recipe', recipeSchema);

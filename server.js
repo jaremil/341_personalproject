@@ -7,12 +7,14 @@ const app = express();
 const expressLayouts = require('express-ejs-layouts');
 
 const indexRouter = require('./routes/index')
+const recipeRouter = require('./routes/project')
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.set('layout', 'layouts/layout');
 app.use(express.static('public'));
 app.use('/', indexRouter);
+app.use('/projects', recipeRouter);
 
 const mongoose = require('mongoose');
 mongoose.connect('process.env.DATABASE_URL')
