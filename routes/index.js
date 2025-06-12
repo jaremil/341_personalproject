@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+// const express = require('express');
+// const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.render('/views/layouts/layout.ejs');
-});
+// router.get('/', (req, res) => {
+//     res.render('/views/layouts/layout.ejs');
+// });
 
-module.exports = router;
+// module.exports = router;

@@ -6,7 +6,7 @@ const express = require('express');
 const app = express();
 // const expressLayouts = require('express-ejs-layouts');
 
-const indexRouter = require('./routes/index')
+// const indexRouter = require('./routes/index')
 const projectsRouter = require('./routes/project')
 
 app.set('view engine', 'ejs');
