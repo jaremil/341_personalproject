@@ -1,19 +1,37 @@
+const passport = require('passport');
+
 const { User, Cat, Recipe } = require("../models/project");
 
 const routes = require("express").Router();
 
-// AUTHICATION ROUTE
-routes.get("/auth/:google_auth_token", async (req, res) => {
-  const id = req.params.google_auth_token;
-  const project = await Cat.find({ name: 'Zildjian' }).exec();
-  res.json(project);
+routes.get("/", async (req, res) => {
+  res.send(`<a href="/auth/signin">Login with Google</a>`);
 });
 
-// HTTPS PUT
-routes.get("/", async (req, res) => {
-  const kitty = new Cat({ name: 'Zildjian' });
-  kitty.save().then(() => console.log('meow'));
-  res.json(kitty.toJSON())
+// GOOGLE LOGIN ROUTE
+routes.get("/auth/signin", passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// CALLBACK AUTHICATION ROUTE
+routes.get('/auth/',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/profile');
+  });
+
+// PROFILE
+routes.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  //where it goes after they log in
+  res.send(`Hello, ${req.user.displayName}! <a href="/logout">Logout</a>`);
+});
+
+//LOG OUT
+routes.get('/logout', (req, res) => {
+  req.logout(() => {
+    res.redirect('/');
+  });
 });
 
 // HTTPS GET

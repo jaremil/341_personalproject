@@ -8,4 +8,4 @@ const User = mongoose.model('User', { displayName: String, googleId: String, ema
 const Cat = mongoose.model('Cat', { name: String });
 const Recipe = mongoose.model('Recipe', { name: String });
 
-module.exports = {User, Cat, Recipe}
+module.exports = { User, Cat, Recipe }
