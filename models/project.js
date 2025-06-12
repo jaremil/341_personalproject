@@ -4,7 +4,7 @@ mongoose.connect(process.env.MONGODB_URI);
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 
-const User = mongoose.model('User', { name: String, google_auth_token: String })
+const User = mongoose.model('User', { displayName: String, googleId: String, email: String })
 const Cat = mongoose.model('Cat', { name: String });
 const Recipe = mongoose.model('Recipe', { name: String });
 
