@@ -1,12 +1,13 @@
+const { User, Cat, Recipe } = require("../models/project");
+
 const routes = require("express").Router();
-const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URI);
 
-const db = mongoose.connection;
-db.on("error", (error) => console.error(error));
-const projects = db.collection("personal_project");
-
-const Cat = mongoose.model('Cat', { name: String });
+// AUTHICATION ROUTE
+routes.get("/auth/:google_auth_token", async (req, res) => {
+  const id = req.params.google_auth_token;
+  const project = await Cat.find({ name: 'Zildjian' }).exec();
+  res.json(project);
+});
 
 // HTTPS PUT
 routes.get("/", async (req, res) => {
@@ -26,8 +27,5 @@ routes.get("/:project_id", async (req, res) => {
 routes.post("/", async (req, res) => {
   return projects.create();
 });
-
-// DELETE
-
 
 module.exports = routes;
