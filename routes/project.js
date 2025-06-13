@@ -24,7 +24,7 @@ routes.get('/profile', (req, res) => {
     return res.redirect('/');
   }
   //where it goes after they log in
-  res.send(`Hello, ${req.user.displayName}! <a href="/logout">Logout</a>`);
+  res.redirect('./project.html');
 });
 
 //LOG OUT
@@ -34,16 +34,71 @@ routes.get('/logout', (req, res) => {
   });
 });
 
-// HTTPS GET
-routes.get("/:project_id", async (req, res) => {
-  const id = req.params.project_id;
-  const project = await Cat.find({ name: 'Zildjian' }).exec();
-  res.json(project);
+
+const path = require('path');
+
+routes.get("/project.html", (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  
+  res.sendFile(path.resolve(__dirname, '..', 'project.html'));
 });
 
-// POST
-routes.post("/", async (req, res) => {
-  return projects.create();
+// CRUD
+// GET all cats
+routes.get('/cats', async (req, res) => {
+  try {
+    const cats = await Cat.find({});
+    res.json(cats);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
 });
+
+// GET
+routes.get('/cats/:id', async (req, res) => {
+  try {
+    const cat = await Cat.findById(req.params.id);
+    if (!cat) return res.status(404).json({ message: "Cat not found" });
+    res.json(cat);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+// CREATE 
+routes.post('/cats', async (req, res) => {
+  try {
+    const newCat = new Cat(req.body);
+    await newCat.save();
+    res.json({ message: "Cat created successfully!", cat: newCat });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+// UPDATE
+routes.put('/cats/:id', async (req, res) => {
+  try {
+    const updatedCat = await Cat.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedCat) return res.status(404).json({ message: "Cat not found" });
+    res.json({ message: "Cat updated successfully!", cat: updatedCat });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+// DELETE 
+routes.delete('/cats/:id', async (req, res) => {
+  try {
+    const deletedCat = await Cat.findByIdAndRemove(req.params.id);
+    if (!deletedCat) return res.status(404).json({ message: "Cat not found" });
+    res.json({ message: "Cat removed successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
 
 module.exports = routes;

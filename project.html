@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Adoption Center Database</title>
+</head>
+
+<body>
+    <a href="/logout">Logout</a>
+
+    <h2>Show Cats in Database</h2>
+    <button id="getAllBtn">Get All Cats</button>
+    <ul id="allCatsList"></ul>
+
+    <h2>Search for Cat by ID</h2>
+    <input id="getId" placeholder="Cat ID">
+    <button id="getBtn">Get</button>
+    <pre id="catDetails"></pre>
+
+    <h2>Input a New Cat's Information</h2>
+    <input id="newName" placeholder="Cat Name">
+    <button id="addBtn">Add</button>
+
+    <h2>Update a Cat's Information</h2>
+    <input id="updateId" placeholder="Cat ID">
+    <input id="updateName" placeholder="New Name">
+    <button id="updateBtn">Update</button>
+
+    <h2>Delete Cat from Database</h2>
+    <input id="deleteId" placeholder="Cat ID">
+    <button id="deleteBtn">Delete</button>
+
+    <script>
+        document.getElementById('getAllBtn').addEventListener('click', async () => {
+            const res = await fetch('/cats'); 
+            const cats = await res.json();
+
+            const ul = document.getElementById('allCatsList');
+            ul.innerHTML = '';
+            cats.forEach(cat => {
+                ul.innerHTML += `<li>${cat._id} - ${cat.name}</li>`;
+            });
+        });
+
+        document.getElementById('getBtn').addEventListener('click', async () => {
+            const id = document.getElementById('getId').value;
+            const res = await fetch('/cats/' + id);
+            if (res.ok) {
+                const cat = await res.json();
+                document.getElementById('catDetails').innerText = JSON.stringify(cat, null, 2);
+            } else {
+                document.getElementById('catDetails').innerText = 'Cat not found';
+            }
+        });
+
+        document.getElementById('addBtn').addEventListener('click', async () => {
+            const name = document.getElementById('newName').value;
+            const res = await fetch('/cats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            const result = await res.json();
+            console.log(result);
+            alert('Cat added');
+        });
+
+        document.getElementById('updateBtn').addEventListener('click', async () => {
+            const id = document.getElementById('updateId').value;
+            const name = document.getElementById('updateName').value;
+            const res = await fetch('/cats/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            const result = await res.json();
+            console.log(result);
+            alert('Cat updated');
+        });
+
+        document.getElementById('deleteBtn').addEventListener('click', async () => {
+            const id = document.getElementById('deleteId').value;
+            const res = await fetch('/cats/' + id, {
+                method: 'DELETE'
+            });
+            const result = await res.json();
+            console.log(result);
+            alert('Cat removed');
+        });
+    </script>
+
+</body>
+</html>
